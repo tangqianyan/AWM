@@ -13,7 +13,7 @@ import time
 action_question_path = '../intermediate_data/action_question_score'
 question_answer_path = '../intermediate_data/question_answer_score'
 test_path = '/home/chixiao/dataset/competition/testing_set.txt'
-result_path = '../result/result_1'
+result_path = '../result/result_06_04_02.csv'
 def find_prediction_for_single_action(question_answer_score_dict,question_related_list):
 
     answer_return = []
@@ -29,6 +29,16 @@ def find_prediction_for_single_action(question_answer_score_dict,question_relate
         answer_related_list = sorted(question_answer_score_dict[questionId].items(),key=lambda x:x[1],reverse=True)[:answer_num]
         for v in answer_related_list:
             answer_return.append(v[0][:4]+v[0][-4:])
+    if len(answer_return) < 100:
+        for question in question_related_list:
+            questionId = question[0]
+            answer_dict = question_answer_score_dict.get(questionId)
+            if answer_dict == None:
+                return ['-1']*100
+            answer_related_list = sorted(question_answer_score_dict[questionId].items(),key=lambda x:x[1],reverse=True)[answer_num:(answer_num)+100-len(answer_return)]
+            for v in answer_related_list:
+                answer_return.append(v[0][:4]+v[0][-4:])
+            break
     answer_return.extend(['-1']*(100-len(answer_return)))
     return answer_return
 
